@@ -45,6 +45,8 @@ import java.awt.CardLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -272,6 +274,66 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
                 }
             }
         });
+        
+        //mousepressed
+        
+        stepForwardButton.addMouseListener(new MouseListener() {
+            
+            private Timer repeatTimer = new Timer(200, new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    if (model != null && !model.isPlaying()) {
+                        controller.stepForward();
+                    }
+                }
+            });
+            
+            public void mousePressed(MouseEvent me) {
+                if (model != null && !model.isPlaying()) {
+                    controller.stepForward();
+                }
+                repeatTimer.setRepeats(true);
+                repeatTimer.setInitialDelay(500);
+                repeatTimer.setDelay(200);
+                repeatTimer.start();
+            }
+            
+            public void mouseReleased(MouseEvent me) {
+                repeatTimer.stop();
+            }
+            
+            public void mouseClicked(MouseEvent me) {}  
+            public void mouseEntered(MouseEvent me) {}
+            public void mouseExited(MouseEvent me) {}
+        });
+        
+        stepBackwardButton.addMouseListener(new MouseListener() {
+            
+            private Timer repeatTimer = new Timer(200, new ActionListener() {
+                public void actionPerformed(ActionEvent ae) {
+                    if (model != null && !model.isPlaying()) {
+                        controller.stepBackward();
+                    }
+                }
+            });
+            
+            public void mousePressed(MouseEvent me) {
+                if (model != null && !model.isPlaying()) {
+                    controller.stepBackward();
+                }
+                repeatTimer.setRepeats(true);
+                repeatTimer.setInitialDelay(500);
+                repeatTimer.setDelay(200);
+                repeatTimer.start();
+            }
+            
+            public void mouseReleased(MouseEvent me) {
+                repeatTimer.stop();
+            }
+            
+            public void mouseClicked(MouseEvent me) {}  
+            public void mouseEntered(MouseEvent me) {}
+            public void mouseExited(MouseEvent me) {}
+        });
     }
 
     private void setup(TimelineModel model) {
@@ -365,12 +427,17 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         disabledTimelineLabel = new javax.swing.JLabel();
         innerPanel = new javax.swing.JPanel();
         controlPanel = new javax.swing.JPanel();
-        playButton = new javax.swing.JToggleButton();
         innerToolbar = new javax.swing.JToolBar(JToolBar.VERTICAL);
         disableButon = new javax.swing.JButton();
         columnsButton = new javax.swing.JButton();
         settingsButton = new javax.swing.JButton();
+        controlsPanel = new javax.swing.JPanel();
+        playButton = new javax.swing.JToggleButton();
+        stepBackwardButton = new javax.swing.JButton();
+        stepForwardButton = new javax.swing.JButton();
+        timelinesContainerPanel = new javax.swing.JPanel();
         timelinePanel = new org.gephi.desktop.timeline.TimelineDrawer();
+        stepTimelinePanel = new org.gephi.desktop.timeline.TimelineDrawer();
         closeButton = new CloseButton();
 
         setMaximumSize(new java.awt.Dimension(32767, 68));
@@ -416,20 +483,6 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
         controlPanel.setLayout(new java.awt.GridBagLayout());
 
-        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
-        playButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.toolTipText")); // NOI18N
-        playButton.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
-        playButton.setFocusable(false);
-        playButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        playButton.setRequestFocusEnabled(false);
-        playButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/enabled.png"))); // NOI18N
-        playButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.insets = new java.awt.Insets(2, 2, 2, 2);
-        controlPanel.add(playButton, gridBagConstraints);
-
         innerToolbar.setBorder(null);
         innerToolbar.setFloatable(false);
         innerToolbar.setRollover(true);
@@ -464,20 +517,60 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
         gridBagConstraints.weighty = 1.0;
         controlPanel.add(innerToolbar, gridBagConstraints);
 
+        controlsPanel.setLayout(new java.awt.GridBagLayout());
+
+        playButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
+        playButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.playButton.toolTipText")); // NOI18N
+        playButton.setDisabledIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/disabled.png"))); // NOI18N
+        playButton.setFocusable(false);
+        playButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        playButton.setMinimumSize(new java.awt.Dimension(56, 36));
+        playButton.setRequestFocusEnabled(false);
+        playButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/enabled.png"))); // NOI18N
+        playButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        controlsPanel.add(playButton, gridBagConstraints);
+
+        stepBackwardButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/step_backward.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(stepBackwardButton, org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.stepBackwardButton.text")); // NOI18N
+        stepBackwardButton.setFocusable(false);
+        stepBackwardButton.setMinimumSize(new java.awt.Dimension(32, 24));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        controlsPanel.add(stepBackwardButton, gridBagConstraints);
+
+        stepForwardButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/step_forward.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(stepForwardButton, org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.stepForwardButton.text")); // NOI18N
+        stepForwardButton.setFocusable(false);
+        stepForwardButton.setMinimumSize(new java.awt.Dimension(32, 24));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        controlsPanel.add(stepForwardButton, gridBagConstraints);
+
+        controlPanel.add(controlsPanel, new java.awt.GridBagConstraints());
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         innerPanel.add(controlPanel, gridBagConstraints);
+
+        timelinesContainerPanel.setLayout(new java.awt.CardLayout());
+        timelinesContainerPanel.add(timelinePanel, "card2");
+        timelinesContainerPanel.add(stepTimelinePanel, "card2");
+
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(1, 0, 1, 0);
-        innerPanel.add(timelinePanel, gridBagConstraints);
+        innerPanel.add(timelinesContainerPanel, gridBagConstraints);
 
         containerPanel.add(innerPanel, "bottom");
 
@@ -502,6 +595,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
     private javax.swing.JButton columnsButton;
     private javax.swing.JPanel containerPanel;
     private javax.swing.JPanel controlPanel;
+    private javax.swing.JPanel controlsPanel;
     private javax.swing.JButton disableButon;
     private javax.swing.JPanel disabledTimeline;
     private javax.swing.JLabel disabledTimelineLabel;
@@ -511,7 +605,11 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
     private javax.swing.JToolBar innerToolbar;
     private javax.swing.JToggleButton playButton;
     private javax.swing.JButton settingsButton;
+    private javax.swing.JButton stepBackwardButton;
+    private javax.swing.JButton stepForwardButton;
+    private transient javax.swing.JPanel stepTimelinePanel;
     private transient javax.swing.JPanel timelinePanel;
+    private javax.swing.JPanel timelinesContainerPanel;
     private javax.swing.JToolBar toolbarEnable;
     // End of variables declaration//GEN-END:variables
 

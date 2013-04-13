@@ -117,6 +117,10 @@ public interface TimelineController {
      */
     public void stopPlay();
 
+    public void stepForward();
+    
+    public void stepBackward();
+    
     /**
      * Sets the play delay in milliseconds. Defines the time between each interval
      * shift.
@@ -137,6 +141,8 @@ public interface TimelineController {
      */
     public void setPlayMode(TimelineModel.PlayMode playMode);
 
+    public void setStepMode(TimelineModel.StepMode stepMode);
+    
     /**
      * Returns all the possible dynamic attribute columns. This is essentially all
      * number-based dynamic columns defined in the graph table.

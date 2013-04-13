@@ -63,6 +63,7 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.timeline.api.TimelineModel.PlayMode;
+import org.gephi.timeline.api.TimelineModel.StepMode;
 import org.gephi.timeline.api.*;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -369,39 +370,23 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
 
                 @Override
                 public void run() {
-                    double min = model.getCustomMin();
-                    double max = model.getCustomMax();
-                    double duration = max - min;
-                    double step = (duration * model.getPlayStep()) * 0.95;
-                    double from = model.getIntervalStart();
-                    double to = model.getIntervalEnd();
-                    boolean bothBounds = model.getPlayMode().equals(TimelineModel.PlayMode.TWO_BOUNDS);
-                    boolean someAction = false;
-                    if (bothBounds) {
-                        if (step > 0 && to < max) {
-                            from += step;
-                            to += step;
-                            someAction = true;
-                        } else if (step < 0 && from > min) {
-                            from += step;
-                            to += step;
-                            someAction = true;
-                        }
+                    stepForward();
+                    
+                    boolean isFinished = false;
+                    boolean isIncreasingInterval = (model.getPlayStep() > 0);
+                    if (isIncreasingInterval) {
+                        double bound = model.getCustomMax();
+                        double position = model.getIntervalEnd();
+                        double epsilon = 0.000000001;
+                        isFinished = (position - bound + epsilon > 0.0);
                     } else {
-                        if (step > 0 && to < max) {
-                            to += step;
-                            someAction = true;
-                        } else if (step < 0 && from > min) {
-                            from += step;
-                            someAction = true;
-                        }
+                        double bound = model.getCustomMin();
+                        double position = model.getIntervalStart();
+                        double epsilon = 0.000000001;
+                        isFinished = (position - bound - epsilon < 0.0);                        
                     }
-
-                    if (someAction) {
-                        from = Math.max(from, min);
-                        to = Math.min(to, max);
-                        setInterval(from, to);
-                    } else {
+                    
+                    if (isFinished) {
                         stopPlay();
                     }
                 }
@@ -421,6 +406,75 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
         }
     }
 
+    private double getStepValue() {
+        if (model.getStepMode() == StepMode.ABSOLUTE_STEP) {
+            double step = model.getPlayStep();
+            return step;
+        }
+        
+        double min = model.getCustomMin();
+        double max = model.getCustomMax();
+        double duration = max - min;
+        double step = (duration * model.getPlayStep());
+        return step;
+    }
+    
+    @Override
+    public void stepForward() {
+        double step = getStepValue();
+        double intervalStart  = model.getIntervalStart();
+        double intervalEnd    = model.getIntervalEnd();
+        double intervalLength = intervalEnd - intervalStart;
+        
+        boolean isIncreasingInterval = (step > 0);
+        boolean isBothBoundsMoving = (model.getPlayMode() == PlayMode.TWO_BOUNDS);
+        if (isIncreasingInterval) {
+            double max = model.getCustomMax();
+            intervalEnd = Math.min(intervalEnd + step, max);
+            if (isBothBoundsMoving) {
+                intervalStart = intervalEnd - intervalLength;
+            }
+        } else {
+            double min = model.getCustomMin();
+            intervalStart = Math.max(intervalStart + step, min);
+            if (isBothBoundsMoving) {
+                intervalEnd = intervalStart + intervalLength;
+            }           
+        }
+        
+        setInterval(intervalStart, intervalEnd);
+    }
+    
+    @Override
+    public void stepBackward() {
+        double step = getStepValue();
+        double intervalStart  = model.getIntervalStart();
+        double intervalEnd    = model.getIntervalEnd();
+        double intervalLength = intervalEnd - intervalStart;
+        
+        boolean isIncreasingInterval = (step > 0);
+        boolean isBothBoundsMoving = (model.getPlayMode() == PlayMode.TWO_BOUNDS);
+        if (isIncreasingInterval) {
+            if (isBothBoundsMoving) {
+                double min = model.getCustomMin();
+                intervalStart = Math.max(intervalStart - step, min);
+                intervalEnd = intervalStart + intervalLength;
+            } else {
+                intervalEnd = Math.max(intervalEnd - step, intervalStart + step);
+            }
+        } else {
+            if (isBothBoundsMoving) {
+                double max = model.getCustomMax();
+                intervalEnd = Math.min(intervalEnd - step, max); //!< (step < 0).
+                intervalStart = intervalEnd - intervalLength;
+            } else {
+                intervalStart = Math.min(intervalStart - step, intervalEnd + step);
+            }
+        }
+        
+        setInterval(intervalStart, intervalEnd);        
+    }
+    
     @Override
     public void setPlaySpeed(int delay) {
         if (model != null) {
@@ -439,6 +493,13 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
     public void setPlayMode(PlayMode playMode) {
         if (model != null) {
             model.setPlayMode(playMode);
+        }
+    }
+    
+    @Override
+    public void setStepMode(StepMode stepMode) {
+        if (model != null) {
+            model.setStepMode(stepMode);
         }
     }
 }
