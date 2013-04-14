@@ -63,7 +63,6 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.gephi.project.api.WorkspaceListener;
 import org.gephi.timeline.api.TimelineModel.PlayMode;
-import org.gephi.timeline.api.TimelineModel.StepMode;
 import org.gephi.timeline.api.*;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
@@ -406,12 +405,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
         }
     }
 
-    private double getStepValue() {
-        if (model.getStepMode() == StepMode.ABSOLUTE_STEP) {
-            double step = model.getPlayStep();
-            return step;
-        }
-        
+    private double getStepValue() {        
         double min = model.getCustomMin();
         double max = model.getCustomMax();
         double duration = max - min;
@@ -493,13 +487,6 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
     public void setPlayMode(PlayMode playMode) {
         if (model != null) {
             model.setPlayMode(playMode);
-        }
-    }
-    
-    @Override
-    public void setStepMode(StepMode stepMode) {
-        if (model != null) {
-            model.setStepMode(stepMode);
         }
     }
 }

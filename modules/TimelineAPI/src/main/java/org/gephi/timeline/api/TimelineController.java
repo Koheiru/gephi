@@ -140,9 +140,7 @@ public interface TimelineController {
      * @param playMode the play mode
      */
     public void setPlayMode(TimelineModel.PlayMode playMode);
-
-    public void setStepMode(TimelineModel.StepMode stepMode);
-    
+        
     /**
      * Returns all the possible dynamic attribute columns. This is essentially all
      * number-based dynamic columns defined in the graph table.

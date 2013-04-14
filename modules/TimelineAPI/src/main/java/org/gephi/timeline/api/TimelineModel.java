@@ -70,11 +70,6 @@ public interface TimelineModel {
          */
         TWO_BOUNDS
     };
-    
-    public enum StepMode {
-        RELATIVE_STEP,
-        ABSOLUTE_STEP,
-    }
 
     /**
      * Returns <code>true</code> if the timeline is enabled. When enabled, the timeline
@@ -168,8 +163,6 @@ public interface TimelineModel {
      * @return the play mode
      */
     public PlayMode getPlayMode();
-
-    public StepMode getStepMode();
     
     /**
      * Returns the current timeline chart or <code>null</code> if node.

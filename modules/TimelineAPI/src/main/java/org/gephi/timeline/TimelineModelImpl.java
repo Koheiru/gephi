@@ -62,7 +62,6 @@ public class TimelineModelImpl implements TimelineModel {
     private AtomicBoolean playing;
     private double playStep;
     private PlayMode playMode;
-    private StepMode stepMode;
     //Chart
     private TimelineChart chart;
     //MinMax
@@ -79,7 +78,6 @@ public class TimelineModelImpl implements TimelineModel {
         playStep = 0.01;
         playing = new AtomicBoolean(false);
         playMode = PlayMode.TWO_BOUNDS;
-        stepMode = StepMode.RELATIVE_STEP;
     }
 
     @Override
@@ -207,16 +205,7 @@ public class TimelineModelImpl implements TimelineModel {
     public void setPlayMode(PlayMode playMode) {
         this.playMode = playMode;
     }
-    
-    @Override
-    public StepMode getStepMode() {
-        return stepMode;
-    }
-    
-    public void setStepMode(StepMode stepMode) {
-        this.stepMode = stepMode;
-    }
-    
+        
     @Override
     public TimelineChart getChart() {
         return chart;
