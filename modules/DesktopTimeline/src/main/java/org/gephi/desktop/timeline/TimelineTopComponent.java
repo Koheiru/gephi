@@ -560,6 +560,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
         stepBackwardButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/step_backward.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(stepBackwardButton, org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.stepBackwardButton.text")); // NOI18N
+        stepBackwardButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.stepBackwardButton.toolTipText")); // NOI18N
         stepBackwardButton.setFocusable(false);
         stepBackwardButton.setMinimumSize(new java.awt.Dimension(32, 24));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -569,6 +570,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
         stepForwardButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/step_forward.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(stepForwardButton, org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.stepForwardButton.text")); // NOI18N
+        stepForwardButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.stepForwardButton.toolTipText")); // NOI18N
         stepForwardButton.setFocusable(false);
         stepForwardButton.setMinimumSize(new java.awt.Dimension(32, 24));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -578,6 +580,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
         rewindBeginButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/rewind_begin.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(rewindBeginButton, org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.rewindBeginButton.text")); // NOI18N
+        rewindBeginButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.rewindBeginButton.toolTipText")); // NOI18N
         rewindBeginButton.setFocusable(false);
         rewindBeginButton.setMinimumSize(new java.awt.Dimension(24, 24));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -587,6 +590,7 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
 
         rewindEndButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/org/gephi/desktop/timeline/resources/rewind_end.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(rewindEndButton, org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.rewindEndButton.text")); // NOI18N
+        rewindEndButton.setToolTipText(org.openide.util.NbBundle.getMessage(TimelineTopComponent.class, "TimelineTopComponent.rewindEndButton.toolTipText")); // NOI18N
         rewindEndButton.setFocusable(false);
         rewindEndButton.setMinimumSize(new java.awt.Dimension(24, 24));
         gridBagConstraints = new java.awt.GridBagConstraints();
