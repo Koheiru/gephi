@@ -118,12 +118,12 @@ public interface TimelineController {
     public void stopPlay();
 
     /**
-     * Do one forward step in the timeline animation.
+     * Do one forward step in the timeline animation using the current step size and play mode.
      */
     public void stepForward();
-    
+        
     /**
-     * Do one backward step in the timeline animation.
+     * Do one backward step in the timeline animation using the current step size and play mode.
      */
     public void stepBackward();
     

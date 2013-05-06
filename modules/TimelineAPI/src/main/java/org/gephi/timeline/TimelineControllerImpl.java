@@ -405,7 +405,7 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
         }
     }
 
-    private double getStepValue() {        
+    private double getStepValue() {
         double min = model.getCustomMin();
         double max = model.getCustomMax();
         double duration = max - min;
@@ -418,7 +418,6 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
         double step = getStepValue();
         double intervalStart  = model.getIntervalStart();
         double intervalEnd    = model.getIntervalEnd();
-        double intervalLength = intervalEnd - intervalStart;
         
         boolean isIncreasingInterval = (step > 0);
         boolean isBothBoundsMoving = (model.getPlayMode() == PlayMode.TWO_BOUNDS);
@@ -426,14 +425,17 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
             double max = model.getCustomMax();
             intervalEnd = Math.min(intervalEnd + step, max);
             if (isBothBoundsMoving) {
-                intervalStart = intervalEnd - intervalLength;
+                double epsilon = 0.000000001;
+                intervalStart = Math.min(intervalStart + step, max - epsilon);
             }
         } else {
+            //! Variable 'step' have negative value.
             double min = model.getCustomMin();
             intervalStart = Math.max(intervalStart + step, min);
             if (isBothBoundsMoving) {
-                intervalEnd = intervalStart + intervalLength;
-            }           
+                double epsilon = 0.000000001;
+                intervalEnd = Math.max(intervalEnd + step, min + epsilon);
+            }     
         }
         
         setInterval(intervalStart, intervalEnd);
@@ -444,25 +446,29 @@ public class TimelineControllerImpl implements TimelineController, DynamicModelL
         double step = getStepValue();
         double intervalStart  = model.getIntervalStart();
         double intervalEnd    = model.getIntervalEnd();
-        double intervalLength = intervalEnd - intervalStart;
         
         boolean isIncreasingInterval = (step > 0);
         boolean isBothBoundsMoving = (model.getPlayMode() == PlayMode.TWO_BOUNDS);
         if (isIncreasingInterval) {
             if (isBothBoundsMoving) {
                 double min = model.getCustomMin();
+                double epsilon = 0.000000001;                
                 intervalStart = Math.max(intervalStart - step, min);
-                intervalEnd = intervalStart + intervalLength;
+                intervalEnd = Math.max(intervalEnd - step, min + epsilon);
             } else {
-                intervalEnd = Math.max(intervalEnd - step, intervalStart + step);
+                double epsilon = 0.000000001;
+                intervalEnd = Math.max(intervalEnd - step, intervalStart + epsilon);
             }
         } else {
+            //! Variable 'step' have negative value.
             if (isBothBoundsMoving) {
                 double max = model.getCustomMax();
-                intervalEnd = Math.min(intervalEnd - step, max); //!< (step < 0).
-                intervalStart = intervalEnd - intervalLength;
+                double epsilon = 0.000000001;
+                intervalStart = Math.min(intervalStart - step, max - epsilon);
+                intervalEnd = Math.min(intervalEnd - step, max);
             } else {
-                intervalStart = Math.min(intervalStart - step, intervalEnd + step);
+                double epsilon = 0.000000001;
+                intervalStart = Math.min(intervalStart - step, intervalEnd - epsilon);
             }
         }
         

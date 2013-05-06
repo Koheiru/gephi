@@ -280,20 +280,35 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
             
             private Timer repeatTimer = new Timer(200, new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    if (model != null) {
+                    if (model == null) {
+                        return;
+                    }
+                    
+                    boolean isForwardPlaying = (model.getPlayStep() > 0);
+                    if (isForwardPlaying) {
                         controller.stepForward();
+                    } else {
+                        controller.stepBackward(); 
                     }
                 }
             });
             
             public void mousePressed(MouseEvent e) {
-                if (model != null) {
-                    controller.stepForward();
-                    repeatTimer.setRepeats(true);
-                    repeatTimer.setInitialDelay(500);
-                    repeatTimer.setDelay(150);
-                    repeatTimer.start();
+                if (model == null) {
+                    return;
                 }
+                
+                boolean isForwardPlaying = (model.getPlayStep() > 0);
+                if (isForwardPlaying) {
+                    controller.stepForward();
+                } else {
+                    controller.stepBackward();
+                }
+
+                repeatTimer.setRepeats(true);
+                repeatTimer.setInitialDelay(500);
+                repeatTimer.setDelay(150);
+                repeatTimer.start();
             }
             
             public void mouseReleased(MouseEvent e) {
@@ -309,20 +324,35 @@ public final class TimelineTopComponent extends JPanel implements TimelineModelL
             
             private Timer repeatTimer = new Timer(200, new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    if (model != null) {
+                    if (model == null) {
+                        return;
+                    }
+                    
+                    boolean isForwardPlaying = (model.getPlayStep() > 0);
+                    if (isForwardPlaying) {
                         controller.stepBackward();
+                    } else {
+                        controller.stepForward();
                     }
                 }
             });
             
             public void mousePressed(MouseEvent e) {
-                if (model != null) {
-                    controller.stepBackward();
-                    repeatTimer.setRepeats(true);
-                    repeatTimer.setInitialDelay(500);
-                    repeatTimer.setDelay(150);
-                    repeatTimer.start();
+                if (model == null) {
+                    return;
                 }
+                    
+                boolean isForwardPlaying = (model.getPlayStep() > 0);
+                if (isForwardPlaying) {
+                    controller.stepBackward();
+                } else {
+                    controller.stepForward();
+                }
+
+                repeatTimer.setRepeats(true);
+                repeatTimer.setInitialDelay(500);
+                repeatTimer.setDelay(150);
+                repeatTimer.start();
             }
             
             public void mouseReleased(MouseEvent e) {
