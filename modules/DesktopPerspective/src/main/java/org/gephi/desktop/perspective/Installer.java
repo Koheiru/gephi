@@ -43,6 +43,8 @@ package org.gephi.desktop.perspective;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import javax.swing.*;
 import org.gephi.desktop.perspective.spi.BottomComponent;
 import org.gephi.perspective.api.PerspectiveController;
@@ -89,10 +91,6 @@ public class Installer extends ModuleInstall {
             public void run() {
                 JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
 
-                //Get the bottom component
-                BottomComponent bottomComponentImpl = Lookup.getDefault().lookup(BottomComponent.class);
-                JComponent bottomComponent = bottomComponentImpl != null ? bottomComponentImpl.getComponent() : null;
-
                 //Replace the content pane with our creation
                 JComponent statusLinePanel = null;
                 for (Component cpnt : frame.getContentPane().getComponents()) {
@@ -100,14 +98,54 @@ public class Installer extends ModuleInstall {
                         statusLinePanel = (JComponent) cpnt;
                     }
                 }
+                
                 if (statusLinePanel != null) {
                     frame.getContentPane().remove(statusLinePanel);
-                    JPanel southPanel = new JPanel(new BorderLayout());
-                    southPanel.add(statusLinePanel, BorderLayout.SOUTH);
-                    if (bottomComponent != null) {
-                        bottomComponent.setVisible(false);
-                    }
+                    
+                    final BorderLayout southPanelLayout = new BorderLayout();
+                    final JPanel southPanel = new JPanel(southPanelLayout);
+                    
+                    //Get the bottom components
+                    JComponent bottomComponent = null;
+                    for (BottomComponent bottomComponentImpl: Lookup.getDefault().lookupAll(BottomComponent.class)) {
+                        bottomComponent = bottomComponentImpl.getComponent();
+                        if (bottomComponent != null) {
+                            bottomComponent.setVisible(false);
+                            bottomComponent.addComponentListener(new ComponentListener() {
+                                final private JPanel parent = southPanel;
+                                final private BorderLayout parentLayout = southPanelLayout;
+                                
+                                @Override
+                                public void componentResized(ComponentEvent event) {
+                                }
+
+                                @Override
+                                public void componentMoved(ComponentEvent event) {
+                                }
+
+                                @Override
+                                public void componentShown(ComponentEvent event) {
+                                    Component ownComponent = event.getComponent();
+                                    Component bottomComponent = parentLayout.getLayoutComponent(BorderLayout.CENTER);
+                                    if (bottomComponent == ownComponent) {
+                                        return;
+                                    }
+                                    if (bottomComponent != null) {
+                                        bottomComponent.setVisible(false);
+                                    }
+                                    parent.add(ownComponent, BorderLayout.CENTER);
+                                    parent.invalidate();
+                                }
+
+                                @Override
+                                public void componentHidden(ComponentEvent event) {
+                                }
+                            });
+                        }
+                    }                    
+                    
                     southPanel.add(bottomComponent, BorderLayout.CENTER);
+                    southPanel.add(statusLinePanel, BorderLayout.SOUTH);
                     frame.getContentPane().add(southPanel, BorderLayout.SOUTH);
                 }
 //                System.err.println(frame.getContentPane().getClass());
